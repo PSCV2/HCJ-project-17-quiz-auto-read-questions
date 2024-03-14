@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Open Question Test Paper</title>
+  <script>
+    var questions = [
+      "What is the capital of France?",
+      "What is the highest mountain in the world?",
+      "What is the smallest country in the world?",
+      "What is the largest ocean in the world?",
+      "What is the currency of Japan?"
+    ];
+    var currentQuestion = 0;
+    var intervalID;
+    var audio = new Audio();
+    audio.volume = 0.2;
+    var rating = 0;
+
+    function startTest() {
+      document.getElementById("startButton").style.display = "none";
+      intervalID = setInterval(showQuestion, 5000);
+      showQuestion();
+    }
+
+    function showQuestion() {
+      if (currentQuestion >= questions.length) {
+        clearInterval(intervalID);
+        document.getElementById("nextButton").style.display = "none";
+        document.getElementById("endButton").style.display = "block";
+        document.getElementById("question").innerHTML = "";
+        document.getElementById("questions").innerHTML = "<h2>All Questions:</h2><ol><li>" + questions.join("</li><li>") + "</li></ol>";
+      } else {
+        document.getElementById("question").innerHTML = (currentQuestion+1) + ". " + questions[currentQuestion];
+        if (currentQuestion == 0 || currentQuestion == 1 || currentQuestion == 2 || currentQuestion == 3 || currentQuestion == 4) {
+          var msg = new SpeechSynthesisUtterance(questions[currentQuestion]);
+          window.speechSynthesis.speak(msg);
+        }
+        currentQuestion++;
+        if (currentQuestion >= questions.length) {
+          document.getElementById("nextButton").style.display = "none";
+        }
+      }
+    }
+
+    function nextQuestion() {
+      showQuestion();
+    }
+
+    function endTest() {
+      clearInterval(intervalID);
+      document.getElementById("startButton").style.display = "block";
+      document.getElementById("nextButton").style.display = "block";
+      document.getElementById("endButton").style.display = "none";
+      document.getElementById("question").innerHTML = "";
+      document.getElementById("questions").innerHTML = "";
+      rating = prompt("Please rate the quiz out of 5:");
+      document.getElementById("rating").innerHTML = "Rating: ";
+      for (var i = 1; i <= rating; i++) {
+        document.getElementById("rating").innerHTML += "<span style='font-size: 50px;'>😃</span>";
+      }
+      for (var i = rating+1; i <= 5; i++) {
+        document.getElementById("rating").innerHTML += "<span style='font-size: 50px;'>😐</span>";
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>Open Question Test Paper</h1>
+  <button id="startButton" onclick="startTest()">Start Test</button>
+  <div id="question"></div>
+  <button id="nextButton" onclick="nextQuestion()">Next Question</button>
+  <button id="endButton" style="display: none;" onclick="endTest()">End Test</button>
+  <div id="questions"></div>
+  <div id="rating"></div>
+</body>
+</html>
